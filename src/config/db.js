@@ -1,11 +1,9 @@
-const mysql = require("mysql2/promise");
-require("dotenv").config();
+const Database = require("better-sqlite3");
+const path = require("path");
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
+const dbPath = path.join(__dirname, "../database/auth.db");
+const db = new Database(dbPath);
 
-module.eports = pool;
+console.log("Connected to the SQLite database");
+
+module.exports = db;

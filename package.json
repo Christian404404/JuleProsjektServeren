@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.5.0",
     "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "mysql2": "^3.16.0"
+    "express": "^5.2.1"
   }
 }
