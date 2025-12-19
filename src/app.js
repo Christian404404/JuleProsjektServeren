@@ -1,4 +1,6 @@
 const express = require("express");
+require("./database/prod.js");
+
 const authRoutes = require("./routes/auth.routes");
 const errorMiddleware = require("./middleware/error.middleware");
 
