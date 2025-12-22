@@ -6,3 +6,5 @@ på websiden.
 
 Mer? TBA etterhvert som jeg ser andre ting som kan være interessante og legge til.
 Dokumenteres både her i README og via skjema i google.
+
+1. await/async from fremtidig implementering av MySQL (midlertidig brukes SQLite3 grunnet admin rettigheter).
