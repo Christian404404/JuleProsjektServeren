@@ -1,24 +1,38 @@
 const bcrypt = require("bcrypt");
+const db = require("../config/db.js");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET, JWT_EXPIRES_IN } = process.env;
 
 const SALT_ROUNDS = 12;
 
-exports.register = async ({ email, password }) => {
+exports.register = ({ email, password }) => {
   if (!email || !password) {
     const error = new Error("Email and password are required!");
     error.statusCode = 400;
     throw error;
   }
 
-  // Hash and salt
-  const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+  const existingUser = db
+    .prepare("SELECT id FROM users WHERE email = ?")
+    .get(email);
 
-  // Temp test user for testing
+  if (existingUser) {
+    const error = new Error("User already exists");
+    error.statusCode = 409;
+    throw error;
+  }
+
+  // Hash and salt
+  const hashedPassword = bcrypt.hashSync(password, SALT_ROUNDS);
+
+  const result = db
+    .prepare("INSERT INTO users (email, password) VALUES (?, ?)")
+    .run(email, hashedPassword);
+
   return {
-    id: 1,
+    id: result.lastInsertRowid,
     email,
-    password: hashedPassword, // Strictly for testing, will remove in prod
-    message:
-      "Test user registered successfully! Use a real database later.(Password hashed)",
+    message: "User was successfully registered!",
   };
 };
 
@@ -29,23 +43,30 @@ exports.login = async ({ email, password }) => {
     throw error;
   }
 
-  // Test stored hash for testing(pretending this came from a DB)
-  const storedHashedPassword = await bcrypt.hash(
-    "adminpassword123",
-    SALT_ROUNDS
-  );
+  const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
 
-  const isMatch = await bcrypt.compare(password, storedHashedPassword);
+  if (!user) {
+    const error = new Error("Invalid email or password");
+    error.statusCode = 401;
+    throw error;
+  }
 
+  const isMatch = bcrypt.compareSync(password, user.password);
   if (!isMatch) {
     const error = new Error("Invalid email or password");
     error.statusCode = 401;
     throw error;
   }
 
+  // JWT Token creation
+  const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+    expiresIn: JWT_EXPIRES_IN,
+  });
+
   return {
-    message:
-      "Test user logged in successfullty! Implementing real user validation later.",
-    token: "test-jwt-token",
+    id: user.id,
+    email: user.email,
+    message: "Successful login!",
+    token,
   };
 };
