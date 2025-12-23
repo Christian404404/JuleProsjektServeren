@@ -1,4 +1,4 @@
-const db = requrie("../config/prod.js");
+const db = require("../config/db.js");
 
 db.prepare(
   `CREATE TABLE IF NOT EXISTS users (
