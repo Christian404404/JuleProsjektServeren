@@ -1,8 +1,2 @@
 node_modules
 .env
-
-src/config
-/src/database/cleanupTestUsers.js
-/src/database/listUsers.js
-
-src/templates(gitignored)

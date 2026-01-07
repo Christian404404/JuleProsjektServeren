@@ -1,0 +1,11 @@
+4️⃣ How to use
+
+1. Copy template.controller.js → rename to something like feature.controller.js
+
+2. Copy template.routes.js → rename to feature.routes.js
+
+3. Fill in the logic inside controller functions
+
+4. Mount routes in app.js
+
+This way you never have to rewrite the async + JWT boilerplate — just fill in your custom logic.
